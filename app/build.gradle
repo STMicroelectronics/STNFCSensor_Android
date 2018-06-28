@@ -1,0 +1,73 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+static def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('MMddHHmm')
+    return formattedDate
+}
+
+android {
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        applicationId "com.st.smartTag"
+        minSdkVersion 19
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 4
+        versionName "1.0.3"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary  true
+    }
+    buildTypes {
+        release {
+            //signingConfig signingConfigs.config
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-dev" + getDate()
+        }
+    }
+    sourceSets {
+        all {
+            res.srcDirs += ['st_images']
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" } //need for mpchart
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation group: 'com.android.support', name: 'appcompat-v7', version: "$rootProject.supportLibraryVersion"
+    implementation group: 'com.android.support', name: 'cardview-v7', version: "$rootProject.supportLibraryVersion"
+    implementation group: 'com.android.support', name: 'design', version: "$rootProject.supportLibraryVersion"
+    implementation group: 'com.android.support', name: 'support-vector-drawable', version: "$rootProject.supportLibraryVersion"
+    implementation group: 'com.android.support', name: 'support-v4', version: "$rootProject.supportLibraryVersion"
+    implementation group: 'com.android.support.constraint', name: 'constraint-layout', version: "$rootProject.constraintLayoutVersion"
+    implementation group: 'android.arch.lifecycle', name: 'runtime', version: "$rootProject.lifeCycleRuntimeVersion"
+    implementation group: 'android.arch.lifecycle', name: 'extensions', version: "$rootProject.lifeCycleExtensionVersion"
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    //since the json lib is inside the android sdk
+    testImplementation group: 'junit', name: 'junit', version: "$rootProject.junitVersion"
+    //memory leak detector
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    androidTestImplementation "com.android.support.test:runner:$rootProject.runnerVersion"
+    androidTestImplementation "com.android.support.test:rules:$rootProject.rulesVersion"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
+}
+apply plugin: 'kotlin-android-extensions'

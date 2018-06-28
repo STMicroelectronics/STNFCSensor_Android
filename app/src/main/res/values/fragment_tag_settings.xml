@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_sampling">Sampling interval(s)</string>
+    <string name="settings_things_to_log">Sensors to monitor: </string>
+    <string name="settings_temperature">Temperature</string>
+    <string name="settings_humidity">Humidity</string>
+    <string name="settings_pressure">Pressure</string>
+    <string name="settings_accelerometer">Accelerometer</string>
+    <string name="settings_orientation">Orientation Events</string>
+    <string name="settings_wakeUp">Wake Up Events</string>
+    <string name="settings_waitingTag">Waiting for tag…</string>
+    <string name="settings_writeConfCompleted">Write completed</string>
+    <string name="settings_samplingOptions">Sampling options</string>
+    <string name="settings_logWithThreshold">Log only out of range [min, max] and accelerometer events</string>
+    <string name="settings_logOnlyNextSample">Force logging of one sample</string>
+    <string name="settings_saveNote">Note: change of settings will erase saved data</string>
+
+    <string name="settings_invalidRange_title">Invalid Sensor Range</string>
+    <string name="settings_outOfRange_format">%s threshold are out of range</string>
+    <string name="settings_invalidRange_format"> Max %s must be bigger than min</string>
+    <string name="settings_invalidSamplingTime"> Sampling time must be in the interval [1,65535]</string>
+    <string name="settings_accelerationCaption"> The value will be aproximated to be a multiple of 256 mG</string>
+</resources>

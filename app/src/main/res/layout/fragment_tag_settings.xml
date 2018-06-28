@@ -1,0 +1,132 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settings_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/cardview_default_radius"
+                app:cardElevation="@dimen/cardview_default_elevation"
+                app:cardUseCompatPadding="true">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_samplingOptions"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/settings_samplingTextLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/settings_samplingTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/settings_sampling"
+                        android:inputType="none|number"
+                        android:maxLength="5" />
+                </android.support.design.widget.TextInputLayout>
+                    <CheckBox
+                        android:id="@+id/settings_logWithThreshold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_logWithThreshold" />
+                    <CheckBox
+                        android:id="@+id/settings_logNextSample"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_logOnlyNextSample" />
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_saveNote"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Tooltip" />
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/cardview_default_radius"
+                app:cardElevation="@dimen/cardview_default_elevation"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/settings_things_to_log"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+                    <com.st.smartTag.tagSettings.SensorSettingsView
+                        android:id="@+id/settingsPressureConf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:configureSensorImg = "@drawable/pressure_icon"
+                        app:configureSensorName= "@string/settings_pressure"
+                        app:configureSensorUnit= "@string/data_pressure_unit"/>
+
+                    <com.st.smartTag.tagSettings.SensorSettingsView
+                        android:id="@+id/settingsTemperatureConf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:configureSensorImg = "@drawable/temperature_icon"
+                        app:configureSensorName= "@string/settings_temperature"
+                        app:configureSensorUnit= "@string/data_temperature_unit"/>
+
+                    <com.st.smartTag.tagSettings.SensorSettingsView
+                        android:id="@+id/settingsHumidityConf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:configureSensorImg = "@drawable/humidity_icon"
+                        app:configureSensorName= "@string/settings_humidity"
+                        app:configureSensorUnit= "@string/data_humidity_unit"/>
+
+                    <com.st.smartTag.tagSettings.AccelerationSettingsView
+                        android:id="@+id/settingsAccelerationConf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/settingsStoreSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_save_black_24dp" />
+
+</android.support.design.widget.CoordinatorLayout>
