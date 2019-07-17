@@ -53,7 +53,7 @@ class DataView : FrameLayout {
         get() = mValue.text
         set(value) {
             mValue.text = value
-            mUnit.visibility= View.VISIBLE;
+            mUnit.visibility= View.VISIBLE
         }
 
     private lateinit var mValue: TextView

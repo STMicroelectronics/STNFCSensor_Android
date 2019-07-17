@@ -48,11 +48,11 @@ import com.st.smartTag.R
 import java.util.*
 
 /**
- * Custom view to display the min an max values for a sensor
+ * Custom view to display the min an max keys for a sensor
  * it has an image called [dataImage] that can be set using the extremeDataImg xml attribute
  * a data unit called [dataUnit] that can be set using the extremeDataUnit xml attribute
  * the format used to display the data can be set using the attribute extremeDataFormat
- * if a sensor doesn't have a min or max value them can be hide with the attribute: extremeHideMinValues or
+ * if a sensor doesn't have a min or max key them can be hide with the attribute: extremeHideMinValues or
  * extremeHideMaxValues
  */
 class ExtremeDataView : FrameLayout {
@@ -75,8 +75,8 @@ class ExtremeDataView : FrameLayout {
     var dataImage: Drawable?
         get() = mImage
         set(value) {
-            mImage = dataImage
-            val img = findViewById<ImageView>(R.id.singleShot_data_image);
+            mImage = value
+            val img = findViewById<ImageView>(R.id.singleShot_data_image)
             img.setImageDrawable(mImage)
         }
 
@@ -133,7 +133,7 @@ class ExtremeDataView : FrameLayout {
                 R.styleable.ExtremeDataView_extremeDataUnit)
 
         mDataFormat = a.getString(
-                R.styleable.ExtremeDataView_extremeDataFormat)
+                R.styleable.ExtremeDataView_extremeDataFormat) ?: "%f"
 
         if (a.hasValue(R.styleable.ExtremeDataView_extremeDataImg)) {
             val img = findViewById<ImageView>(R.id.singleShot_data_image)
@@ -153,8 +153,8 @@ class ExtremeDataView : FrameLayout {
     private fun hideMinValues(hide: Boolean) {
         val visibility = if (hide) View.INVISIBLE else View.VISIBLE
 
-        mMinValue.visibility = visibility;
-        mMinDateValue.visibility = visibility;
+        mMinValue.visibility = visibility
+        mMinDateValue.visibility = visibility
         findViewById<View>(R.id.extremeData_minUnit).visibility = visibility
         findViewById<View>(R.id.extremeData_minValueLabel).visibility = visibility
 

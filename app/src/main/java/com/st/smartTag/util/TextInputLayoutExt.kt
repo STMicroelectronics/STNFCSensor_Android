@@ -37,7 +37,7 @@
 
 package com.st.smartTag.util
 
-import android.support.design.widget.TextInputLayout
+import com.google.android.material.textfield.TextInputLayout
 import com.st.smartTag.R
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty

@@ -39,14 +39,15 @@ package com.st.smartTag.nfc
 
 import android.nfc.Tag
 import android.nfc.tech.NfcV
-import com.st.smartTag.util.lsb
-import com.st.smartTag.util.msb
+import com.st.smartaglib.util.lsb
+import com.st.smartaglib.util.msb
+import com.st.smartaglib.SmarTagIO
 import java.io.IOException
 
 /**
  * class with utility function to interact with an ST25DV Tag
  */
-class ST25DVTag (private val tag:NfcV){
+class ST25DVTag (private val tag:NfcV) : SmarTagIO {
 
     /**
      * write a tag memory cell
@@ -55,10 +56,10 @@ class ST25DVTag (private val tag:NfcV){
      * @throws ST25DVException if the data length is not 4
      * @throws IOException if there is some IO problems
      */
-    fun write(address:Short, data:ByteArray){
+    override fun write(address:Short, data:ByteArray){
         //Log.d("ST25DVTag","Write: "+address+" data:"+ Arrays.toString(data))
         if(data.size!=4){
-            throw ST25DVException("The memory is write at block of 4 bytes, impossible write "+data.size +"bytes")
+            throw ST25DVException("The memory is write at block of 4 bytes, impossible write " + data.size + "bytes")
         }
         val writeCommand = ByteArray(8)
         writeCommand[0] = ST25DV_REQUEST_HEADER
@@ -78,7 +79,7 @@ class ST25DVTag (private val tag:NfcV){
      * it return an ByteArray of 4 elements.
      * @throws IOException
      */
-    fun read(address: Short): ByteArray{
+    override fun read(address: Short): ByteArray{
         //Log.d("ST25DVTag","Read: "+address)
 
         val readCommand = byteArrayOf(
@@ -120,9 +121,9 @@ class ST25DVTag (private val tag:NfcV){
     /**
      * change the gpo level to [level]
      */
-    private fun setGPOLevel(level:GPOLevel){
+    private fun setGPOLevel(level: GPOLevel){
         configureGPO()
-        val levelValue = (if(level==GPOLevel.High) 0 else 1).toByte()
+        val levelValue = (if(level== GPOLevel.High) 0 else 1).toByte()
         safeTransceive(byteArrayOf(
                 ST25DV_REQUEST_HEADER, 0xA9.toByte(), 0x02, levelValue))
     }
@@ -130,7 +131,7 @@ class ST25DVTag (private val tag:NfcV){
     /**
      *  open a connection with the tag
      */
-    fun connect(){
+    override fun connect(){
         tag.connect()
         //presentPassword()
         //configureGPO()
@@ -140,7 +141,7 @@ class ST25DVTag (private val tag:NfcV){
     /**
      * close a connection with the tag
      */
-    fun close(){
+    override fun close(){
         //presentPassword()
         //configureGPO()
         //setGPOLevel(GPOLevel.Low)
@@ -203,18 +204,18 @@ class ST25DVTag (private val tag:NfcV){
 
 
     companion object {
-        private val COMMAND_RETRY = 5
-        private val COMMAND_DELAY = 5L
-        private val COMMAND_OK: Byte = 0x00
-        private val ST25DV_REQUEST_HEADER: Byte = 0x02
-        private val READ_COMMAND: Byte = 0x30
-        private val WRITE_COMMAND: Byte = 0x31
+        private const val COMMAND_RETRY = 5
+        private const val COMMAND_DELAY = 5L
+        private const val COMMAND_OK: Byte = 0x00
+        private const val ST25DV_REQUEST_HEADER: Byte = 0x02
+        private const val READ_COMMAND: Byte = 0x30
+        private const val WRITE_COMMAND: Byte = 0x31
 
         /**
          * build a ST25DVTag object
          * @return if [tag] is a valid NfcV type tag an object of type ST25DVTag otherwise null
          */
-        fun get(tag:Tag):ST25DVTag?{
+        fun get(tag:Tag): ST25DVTag?{
             val nfcV = NfcV.get(tag)
             return if(nfcV!=null)
                 ST25DVTag(nfcV)

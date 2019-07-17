@@ -38,7 +38,7 @@
 package com.st.smartTag
 
 import android.Manifest
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -47,17 +47,18 @@ import android.net.Uri
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.st.smarTag.cloud.SmarTagCloudSync
+import com.st.smarTag.cloud.config.CloudConfigActivity
+import com.st.smartTag.nfc.stringId
 import com.st.smartTag.tagExtremeData.TagExtremeDataFragment
 import com.st.smartTag.tagExtremeData.TagExtremeViewModel
 import com.st.smartTag.tagPlotData.TagDataFragment
@@ -76,7 +77,8 @@ class MainActivity : AppCompatActivity() {
     private val singleShotFragment = TagSingleShotFragment()
 
     private lateinit var nfcTagHolder: NfcTagViewModel
-
+    private lateinit var dataSample: TagDataViewModel
+    private lateinit var extremeData: TagExtremeViewModel
     private lateinit var nfcAdapter: NfcAdapter
 
     private var errorToast: Toast? = null
@@ -99,13 +101,30 @@ class MainActivity : AppCompatActivity() {
                     appChooser.flags = Intent.FLAG_ACTIVITY_NEW_TASK // need for android 4.4
 
                     Snackbar.make(mainView, getString(R.string.main_export_data_success), Snackbar.LENGTH_LONG)
-                            .setAction(R.string.main_open, { context?.startActivity(appChooser)} )
+                            .setAction(R.string.main_open) { context?.startActivity(appChooser)}
                             .show()
                 }
             }
         }
-
     }
+
+    private val cloudSyncReceiver = object : BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if(context==null)
+                return
+            when(intent?.action){
+                SmarTagCloudSync.CONNECTION_ERROR_ACTION -> {
+                    val msg = intent.getStringExtra(SmarTagCloudSync.EXTRA_CONNECTION_ERROR_DESCRIPTION)
+                    val displayString = context.getString(R.string.main_cloud_error_format,msg)
+                    Toast.makeText(context, displayString,Toast.LENGTH_LONG).show()
+                }
+                SmarTagCloudSync.CLOUD_SYNC_COMPLETED_ACTION->{
+                    Toast.makeText(context,R.string.main_cloud_complete,Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,7 +134,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         mainView = findViewById(R.id.main_root_view)
         navigationView = findViewById(R.id.main_navigation)
-        navigationView.setOnNavigationItemSelectedListener({ this.handleNavigationItemSelected(it) })
+        navigationView.setOnNavigationItemSelectedListener { this.handleNavigationItemSelected(it) }
 
         if(savedInstanceState==null)//first time
             showFragment(settingFragment)
@@ -125,10 +144,36 @@ class MainActivity : AppCompatActivity() {
         nfcTagHolder = NfcTagViewModel.create(this)
         initializeNfcObserver()
 
+        dataSample = TagDataViewModel.create(this)
+        extremeData = TagExtremeViewModel.create(this)
+        initializeCloudSyncDataObserver()
+
         if (intent?.action == NfcAdapter.ACTION_TECH_DISCOVERED) {
             val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
             nfcTagHolder.nfcTagDiscovered(tag)
         }
+    }
+
+    private fun initializeCloudSyncDataObserver() {
+        dataSample.isUpdating.observe(this, Observer {
+            it?.let { isReading ->
+                if(!isReading){
+                    val id = nfcTagHolder.nfcTag.value?.stringId
+                    val samples = dataSample.allSampleList.value
+                    if(id !=null && samples!=null){
+                        SmarTagCloudSync.startDataSync(this,id,samples)
+                    }
+                }
+            }
+        })
+
+        extremeData.dataExtreme.observe(this, Observer { extremes ->
+            val id = nfcTagHolder.nfcTag.value?.stringId
+            if(id!=null && extremes!=null){
+                SmarTagCloudSync.startExtremeSync(this,id,extremes)
+            }
+        })
+
     }
 
     private fun initializeNfcObserver() {
@@ -143,7 +188,7 @@ class MainActivity : AppCompatActivity() {
         })
         nfcTagHolder.ioError.observe(this, Observer { errorMsg ->
             if(errorMsg!=null)
-                Log.e("SmartTag","error: "+errorMsg)
+                Log.e("SmartTag", "error: $errorMsg")
             /*errorToast?.cancel() // remove the previous one
             if (errorMsg == null) {
                 errorToast = null // free the reference
@@ -179,24 +224,45 @@ class MainActivity : AppCompatActivity() {
                 exportDataToXlsFile()
                 true
             }
+            R.id.main_menu_cloudConfig -> {
+                startActivity(Intent(this,CloudConfigActivity::class.java))
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     override fun onResume() {
         super.onResume()
+
+        if(!nfcAdapter.isEnabled){
+            Snackbar.make(mainView, R.string.main_nfc_disabled,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.main_nfc_enable_button) {
+                        startActivity( Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
+                    }
+                    .show()
+            return
+        }
+
         nfcAdapter.enableReaderMode(this,
                 { foundTag -> nfcTagHolder.nfcTagDiscovered(foundTag) },
                 NfcAdapter.FLAG_READER_NFC_V, Bundle())
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(exportResultReceiver,
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(this).apply {
+            registerReceiver(exportResultReceiver,
                 ExportDataService.getExportDataResponseFilter())
+            registerReceiver(cloudSyncReceiver,SmarTagCloudSync.getDataSyncIntentFilter())
+        }
     }
 
     override fun onPause() {
         super.onPause()
         nfcAdapter.disableReaderMode(this)
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(exportResultReceiver)
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(this).apply {
+            unregisterReceiver(exportResultReceiver)
+            unregisterReceiver(cloudSyncReceiver)
+        }
     }
 
     private fun handleNavigationItemSelected(item: MenuItem): Boolean {
@@ -221,7 +287,7 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
-    private fun showFragment(fragment: Fragment) {
+    private fun showFragment(fragment: androidx.fragment.app.Fragment) {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.main_contentView, fragment)
                 .commit()
@@ -232,8 +298,8 @@ class MainActivity : AppCompatActivity() {
             requestWritePermission()
         } else {
             val settings = TagSettingsViewModel.create(this).currentSettings.value
-            val extreme = TagExtremeViewModel.create(this).dataExtreme.value
-            val dataSample = TagDataViewModel.create(this).allSampleList.value
+            val extreme = extremeData.dataExtreme.value
+            val dataSample = dataSample.allSampleList.value
             ExportDataService.startExportCSVData(this, settings, extreme, dataSample)
         }
     }
@@ -245,9 +311,9 @@ class MainActivity : AppCompatActivity() {
             // For example if the user has previously denied the permission.
             Snackbar.make(mainView, R.string.main_request_write_permission,
                     Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, {
+                    .setAction(android.R.string.ok) {
                         requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_WRITE_PERMISSION)
-                    })
+                    }
                     .show()
         } else {
             // Camera permission has not been granted yet. Request it directly.

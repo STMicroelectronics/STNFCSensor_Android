@@ -37,51 +37,54 @@
 
 package com.st.smartTag.tagPlotData
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.content.LocalBroadcastManager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.st.smartTag.NfcTagViewModel
 import com.st.smartTag.R
-import com.st.smartTag.SmartTagService
-import com.st.smartTag.model.DataSample
+import com.st.smartTag.SmarTagService
+import com.st.smartaglib.model.DataSample
 
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.ViewPager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import android.util.Log
 import android.widget.ProgressBar
+import com.st.smartTag.util.getTypeSerializableExtra
 
 
-class TagDataFragment : Fragment() {
+class TagDataFragment : androidx.fragment.app.Fragment() {
 
     private val nfcServiceResponse = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
 
             when (intent?.action) {
-                SmartTagService.READ_TAG_NUMBER_SAMPLE_DATA_ACTION -> {
-                    val numberSample = intent.getIntExtra(SmartTagService.EXTRA_TAG_NUMBER_SAMPLE, 0)
+                SmarTagService.READ_TAG_NUMBER_SAMPLE_DATA_ACTION -> {
+                    val numberSample = intent.getIntExtra(SmarTagService.EXTRA_TAG_NUMBER_SAMPLE, 0)
                     //Toast.makeText(context, String.format("sample: %d", numberSample), Toast.LENGTH_SHORT).show()
                     smartTag.setNumberSample(numberSample)
                 }
-                SmartTagService.READ_TAG_SAMPLE_DATA_ACTION -> {
-                    val data = intent.getParcelableExtra<DataSample>(SmartTagService.EXTRA_TAG_SAMPLE_DATA)
+                SmarTagService.READ_TAG_SAMPLE_DATA_ACTION -> {
+                    val data = intent.getTypeSerializableExtra<DataSample>(SmarTagService.EXTRA_TAG_SAMPLE_DATA)
                     smartTag.appendSample(data)
                 }
-                SmartTagService.READ_TAG_ERROR_ACTION -> {
-                    val msg = intent.getStringExtra(SmartTagService.EXTRA_ERROR_STR)
-                    readProgress.visibility=View.GONE // Hide the progres after an error
+                SmarTagService.READ_TAG_ERROR_ACTION -> {
+                    val msg = intent.getStringExtra(SmarTagService.EXTRA_ERROR_STR)
+                    readProgress.visibility=View.GONE // Hide the progress after an error
                     nfcTagHolder.nfcTagError(msg)
                 }
             }
         }
     }
+
+
 
     private lateinit var nfcTagHolder: NfcTagViewModel
     private lateinit var smartTag: TagDataViewModel
@@ -89,12 +92,8 @@ class TagDataFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_show_data, container, false)
-        rootView.findViewById<ViewPager>(R.id.tagData_viewPager).adapter = TabViewAdapter(childFragmentManager)
+        rootView.findViewById<androidx.viewpager.widget.ViewPager>(R.id.tagData_viewPager).adapter = TabViewAdapter(childFragmentManager)
         readProgress = rootView.findViewById(R.id.tagData_readProgress)
-     /*   mAdapter = new MyAdapter(getSupportFragmentManager());
-
-        mPager = (ViewPager)findViewById(R.id.pager);
-        mPager.setAdapter(mAdapter);*/
         return rootView
     }
 
@@ -106,7 +105,7 @@ class TagDataFragment : Fragment() {
     }
 
     private fun <T> getProgressUpdate():Observer<T>{
-        return Observer<T> {
+        return Observer {
             val nReadSample = smartTag.allSampleList.value?.size ?: 0
             val nTotalSample = smartTag.numberSample.value ?: 0
             Log.d("progress","$nReadSample / $nTotalSample")
@@ -120,12 +119,12 @@ class TagDataFragment : Fragment() {
 
     private fun initializeNfcTagObserver() {
         nfcTagHolder.nfcTag.observe(this, Observer {
-            if (it != null) SmartTagService.startReadingDataSample(context!!, it)
+            if (it != null) SmarTagService.startReadingDataSample(context!!, it)
         })
         smartTag.numberSample.observe(this, Observer {
-            it?.let {
-                Log.d("progress","Total: "+it)
-                readProgress.max = it
+            it?.let { nSample ->
+                Log.d("progress", "Total: $nSample")
+                readProgress.max = nSample
                 readProgress.visibility = View.VISIBLE
             }
         })
@@ -136,18 +135,21 @@ class TagDataFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(context!!)
-                .registerReceiver(nfcServiceResponse, SmartTagService.getReadDataSampleFilter())
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(requireContext()).apply {
+            registerReceiver(nfcServiceResponse, SmarTagService.getReadDataSampleFilter())
+        }
+
     }
 
     override fun onPause() {
         super.onPause()
-        LocalBroadcastManager.getInstance(context!!)
-                .unregisterReceiver(nfcServiceResponse)
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(requireContext()).apply {
+            unregisterReceiver(nfcServiceResponse)
+        }
     }
 
 
-    private class TabViewAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    private class TabViewAdapter(fm: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentPagerAdapter(fm) {
 
         companion object {
             val FRAGMENT_VIEW = arrayOf(
@@ -160,7 +162,7 @@ class TagDataFragment : Fragment() {
             return FRAGMENT_VIEW.size
         }
 
-        override fun getItem(position: Int): Fragment {
+        override fun getItem(position: Int): androidx.fragment.app.Fragment {
             return FRAGMENT_VIEW[position].newInstance()
         }
 

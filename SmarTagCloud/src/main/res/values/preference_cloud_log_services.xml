@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="prefCloudService_summary">Current service: %s</string>
+    <string name="prefCloudService_title">Cloud Configuration</string>
+
+    <string-array name="perfCloudService_name">
+        <item>Generic MQTT</item>
+        <item>IBM Watson IOT</item>
+    </string-array>
+
+    <string-array name="perfCloudService_value">
+        <item>cloudLog_genericMqtt</item>
+        <item>cloudLog_ibmWatson</item>
+    </string-array>
+
+
+</resources>

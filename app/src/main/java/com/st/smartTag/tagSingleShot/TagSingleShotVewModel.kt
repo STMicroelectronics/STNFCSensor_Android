@@ -37,12 +37,12 @@
 
 package com.st.smartTag.tagSingleShot
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProviders
-import android.support.v4.app.FragmentActivity
-import com.st.smartTag.model.SensorDataSample
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.FragmentActivity
+import com.st.smartaglib.model.SensorDataSample
 
 
 class TagSingleShotVewModel : ViewModel(){
@@ -62,7 +62,7 @@ class TagSingleShotVewModel : ViewModel(){
     fun newSample(sensorData: SensorDataSample) {
         _dataSample.value = sensorData
         _waitingAnswer.value=null
-        _singleShotReadFail.value=false;
+        _singleShotReadFail.value=false
     }
 
     fun readFail(){
@@ -75,7 +75,7 @@ class TagSingleShotVewModel : ViewModel(){
     }
 
     companion object {
-        fun create(activity: FragmentActivity): TagSingleShotVewModel {
+        fun create(activity: androidx.fragment.app.FragmentActivity): TagSingleShotVewModel {
             return ViewModelProviders.of(activity).get(TagSingleShotVewModel::class.java)
         }
     }

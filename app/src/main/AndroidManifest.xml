@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.st.smartTag">
 
     <!-- no nfc no tag -->
@@ -18,7 +19,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name="androidx.multidex.MultiDexApplication">
         <activity android:name=".MainActivity"
             android:windowSoftInputMode="stateAlwaysHidden">
             <!-- stateAlwaysHidden = avoid to shod the keyboard when enter in the activity -->
@@ -34,21 +36,30 @@
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_smart_tag_tech_filter" />
         </activity>
-        <activity android:name=".AboutActivity">
+        <activity android:name=".AboutActivity"
+            android:label="@string/about_title">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.st.smartTag.MainActivity" />
         </activity>
 
         <service
-            android:name=".SmartTagService"
+            android:name=".SmarTagService"
             android:exported="false" />
         <service
             android:name=".ExportDataService"
             android:exported="false"/>
 
+        <activity android:name="com.st.smarTag.cloud.config.CloudConfigActivity"
+            tools:replace="android:theme"
+            android:theme="@style/AppPreferenceTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.st.smartTag.MainActivity" />
+        </activity>
+
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}"
             android:exported="false"
             android:grantUriPermissions="true">

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    android:title="IBM Watson"
+    android:key="IBMWatson"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:title="@string/prefIBMWatson_organization_title"
+        android:key="IBMWatson.organization" />
+    <com.st.smarTag.cloud.config.preferences.PasswordTextPreference
+        android:title="@string/prefIBMWatson_auth_token_title"
+        android:key="IBMWatson.authToken"/>
+    <EditTextPreference
+        android:title="@string/prefIBMWatson_device_type_title"
+        android:defaultValue="@string/prefIBMWatson_device_type_default"
+        android:key="IBMWatson.deviceType" />
+    <EditTextPreference
+        android:title="@string/prefIBMWatson_device_id_title"
+        android:defaultValue="@string/prefIBMWatson_device_id_default"
+        android:key="IBMWatson.deviceId" />
+</PreferenceScreen>

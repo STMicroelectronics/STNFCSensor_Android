@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    android:title="@string/prefMqtt_title"
+    android:key="GenericMqtt"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:title="@string/prefMqtt_userNameTitle"
+        android:dialogMessage="@string/prefMqtt_userNameDescription"
+        android:key="genericMqtt.userName" />
+
+    <com.st.smarTag.cloud.config.preferences.PasswordTextPreference
+        android:title="@string/prefMqtt_passwordTitle"
+        android:key="genericMqtt.password"/>
+
+    <EditTextPreference
+        android:title="@string/prefMqtt_serverTitle"
+        android:dialogMessage="@string/prefMqtt_serverDescription"
+        android:key="genericMqtt.server"/>
+
+    <com.st.smarTag.cloud.config.preferences.ServerPortPreference
+        android:title="@string/prefMqtt_portTitle"
+        android:defaultValue="1883"
+        android:key="genericMqtt.port" />
+
+</PreferenceScreen>

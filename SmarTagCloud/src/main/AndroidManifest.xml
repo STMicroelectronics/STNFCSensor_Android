@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.st.smarTag.cloud">
+
+    <!-- Read aws certificate-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- add for paho -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application>
+        <service
+            android:name=".SmarTagCloudSync"
+            android:exported="false" />
+
+        <activity android:name=".config.CloudConfigActivity"
+            android:label="@string/prefCloudService_title"
+            android:theme="@style/LibPreferenceTheme"/>
+
+        <service
+            android:name="org.eclipse.paho.android.service.MqttService"
+            android:enabled="true" />
+    </application>
+
+</manifest>

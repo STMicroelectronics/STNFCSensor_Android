@@ -43,7 +43,12 @@
         android:title="@string/main_menu_about"
         app:showAsAction="never" />
     <item
+        android:id="@+id/main_menu_cloudConfig"
+        android:title="Cloud Config"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/main_menu_exportXLSLog"
         android:title="@string/main_export_data"
         app:showAsAction="ifRoom" />
+
 </menu>

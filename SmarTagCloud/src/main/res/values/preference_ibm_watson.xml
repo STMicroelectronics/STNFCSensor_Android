@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prefIBMWatson_organization_title">Organization</string>
+    <string name="prefIBMWatson_organization_summary">%s</string>
+
+    <string name="prefIBMWatson_auth_token_title">Authentication token</string>
+
+    <string name="prefIBMWatson_device_type_title">Device Type</string>
+    <string name="prefIBMWatson_device_type_summary">%s</string>
+    <string name="prefIBMWatson_device_type_default">STNFCSensorApp</string>
+
+    <string name="prefIBMWatson_device_id_title">Device Id</string>
+    <string name="prefIBMWatson_device_id_summary">%s</string>
+    <string name="prefIBMWatson_device_id_default">STNFCSensor</string>
+
+</resources>

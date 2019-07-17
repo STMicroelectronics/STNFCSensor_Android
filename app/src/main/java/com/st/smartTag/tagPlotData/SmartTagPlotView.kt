@@ -47,21 +47,21 @@ import com.st.smartTag.R
 
 class SmartTagPlotView : FrameLayout {
 
-    lateinit var titleView: TextView
+    private lateinit var titleView: TextView
     var title: CharSequence
         get() = titleView.text
         set(value) {
             titleView.text = value
         }
 
-    lateinit var xTitleView: TextView
+    private lateinit var xTitleView: TextView
     var xTitle: CharSequence?
         get() = xTitleView.text
         set(value) {
             xTitleView.setTextOrHide(value)
         }
 
-    lateinit var yTitleView: TextView
+    private lateinit var yTitleView: TextView
     var yTitle: CharSequence?
         get() = yTitleView.text
         set(value) {
@@ -97,7 +97,7 @@ class SmartTagPlotView : FrameLayout {
         val a = context.obtainStyledAttributes(
                 attrs, R.styleable.SmartTagPlotView, defStyle, 0)
 
-        title = a.getString(R.styleable.SmartTagPlotView_tagPlotView_title)
+        title = a.getString(R.styleable.SmartTagPlotView_tagPlotView_title) ?: ""
 
         xTitle = a.getString(R.styleable.SmartTagPlotView_tagPlotView_xTitle)
         yTitle = a.getString(R.styleable.SmartTagPlotView_tagPlotView_yTitle)

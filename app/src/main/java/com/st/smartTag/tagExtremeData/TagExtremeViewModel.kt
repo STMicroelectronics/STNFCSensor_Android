@@ -37,22 +37,25 @@
 
 package com.st.smartTag.tagExtremeData
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProviders
-import android.support.v4.app.FragmentActivity
-import com.st.smartTag.model.TagExtreme
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.FragmentActivity
+import com.st.smartaglib.model.TagExtreme
 
 class TagExtremeViewModel : ViewModel() {
 
-    val dataExtreme = MutableLiveData<TagExtreme>()
+    private val _dataExtreme = MutableLiveData<TagExtreme>()
+    val dataExtreme:LiveData<TagExtreme>
+        get() = _dataExtreme
 
     fun newExtremeData(data: TagExtreme) {
-        dataExtreme.value = data
+        _dataExtreme.value = data
     }
 
     companion object {
-        fun create(activity: FragmentActivity): TagExtremeViewModel {
+        fun create(activity: androidx.fragment.app.FragmentActivity): TagExtremeViewModel {
             return ViewModelProviders.of(activity).get(TagExtremeViewModel::class.java)
         }
     }

@@ -37,11 +37,11 @@
 
 package com.st.smartTag.tagSettings
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProviders
-import android.support.v4.app.FragmentActivity
-import com.st.smartTag.model.SamplingConfiguration
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.FragmentActivity
+import com.st.smartaglib.model.SamplingConfiguration
 
 class TagSettingsViewModel : ViewModel() {
 
@@ -50,19 +50,19 @@ class TagSettingsViewModel : ViewModel() {
     var readSettings: MutableLiveData<Boolean> = MutableLiveData()
 
     companion object {
-        fun create(activity: FragmentActivity): TagSettingsViewModel {
+        fun create(activity: androidx.fragment.app.FragmentActivity): TagSettingsViewModel {
             return ViewModelProviders.of(activity).get(TagSettingsViewModel::class.java)
         }
     }
 
     fun updateSettings(newConf: SamplingConfiguration) {
         readSettings.value = false;
-        desiredSettings.value = newConf;
+        desiredSettings.value = newConf
     }
 
     fun onSettingsWrote() {
         newConfiguration(desiredSettings.value)
-        readSettings.value = true;
+        readSettings.value = true
     }
 
     fun newConfiguration(conf: SamplingConfiguration?) {

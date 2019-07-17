@@ -37,10 +37,10 @@
 
 package com.st.smartTag.tagPlotData
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,12 +53,12 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.st.smartTag.R
-import com.st.smartTag.model.SensorDataSample
+import com.st.smartaglib.model.SensorDataSample
 import com.st.smartTag.tagPlotData.TagPlotDetailsFragment.Companion.Sample
 import java.util.*
 
 
-class TagPlotDataFragment : Fragment() {
+class TagPlotDataFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var smartTag: TagDataViewModel
 
@@ -126,11 +126,11 @@ class TagPlotDataFragment : Fragment() {
             temperatureChart.clearPlotData()
             humidityChart.clearPlotData()
             vibrationChart.clearPlotData()
-            it?.forEach { appendSample(it) }
+            it?.forEach { sample -> appendSample(sample) }
         })
 
         smartTag.lastSensorSample.observe(this, Observer {
-            it?.let { appendSample(it) }
+            it?.let { sample -> appendSample(sample) }
         })
 
     }
@@ -145,7 +145,7 @@ class TagPlotDataFragment : Fragment() {
         chart.setTouchEnabled(true)
 
         // isEnable scaling and dragging
-        chart.setDragEnabled(true)
+        chart.isDragEnabled = true
         chart.setScaleEnabled(true)
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(true)
@@ -234,7 +234,7 @@ class TagPlotDataFragment : Fragment() {
     private fun createdetailsDataSet(plotData: ILineDataSet):ArrayList<Sample>{
         val dataSet = ArrayList<Sample>(plotData.entryCount)
         for (i in 0 until plotData.entryCount){
-            val plotEntry = plotData.getEntryForIndex(i);
+            val plotEntry = plotData.getEntryForIndex(i)
             val date = Date(fistSampleTime+plotEntry.x.toLong())
             dataSet.add(Sample(date,plotEntry.y))
         }
@@ -250,7 +250,7 @@ class TagPlotDataFragment : Fragment() {
 
     companion object {
 
-        private val DETAILS_DIALOG_TAG = TagPlotDataFragment::class.java.canonicalName +".DETAILS_DIALOG_TAG"
+        private val DETAILS_DIALOG_TAG = TagPlotDataFragment::class.java.simpleName +".DETAILS_DIALOG_TAG"
 
         private data class ChartExtreme(val min:Float,val max:Float)
         private val TEMPERATURE_EXTREME = ChartExtreme(min = -5.0f,max = 45.0f)

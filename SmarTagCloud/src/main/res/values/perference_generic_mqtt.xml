@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prefMqtt_title">Generic Mqtt</string>
+
+
+    <string name="prefMqtt_userNameTitle">User name</string>
+    <string name="prefMqtt_userNameDescription">Broker login name</string>
+    <string name="prefMqtt_userNameSummary">%s</string>
+
+    <string name="prefMqtt_passwordTitle">Password</string>
+
+    <string name="prefMqtt_serverTitle">Broker address</string>
+    <string name="prefMqtt_serverDescription">Broker address as tcp://… or ssh://…</string>
+    <string name="prefMqtt_serverSummary">%s</string>
+    <string name="prefMqtt_invalidServerAddress">Address has not a tcp or ssh protocol</string>
+
+    <string name="prefMqtt_portTitle">Port</string>
+    <string name="prefMqtt_portSummary">%d</string>
+
+</resources>

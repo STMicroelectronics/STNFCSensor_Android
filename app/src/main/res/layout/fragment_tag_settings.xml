@@ -1,4 +1,4 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/settings_content"
     android:layout_width="match_parent"
@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/cardview_default_radius"
@@ -29,19 +29,19 @@
                         android:text="@string/settings_samplingOptions"
                         android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/settings_samplingTextLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/settings_samplingTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/settings_sampling"
                         android:inputType="none|number"
                         android:maxLength="5" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
                     <CheckBox
                         android:id="@+id/settings_logWithThreshold"
                         android:layout_width="match_parent"
@@ -61,9 +61,9 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Tooltip" />
                 </LinearLayout>
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/cardview_default_radius"
@@ -113,12 +113,12 @@
                         android:layout_height="wrap_content"/>
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
     </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/settingsStoreSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -129,4 +129,4 @@
         android:visibility="gone"
         app:srcCompat="@drawable/ic_save_black_24dp" />
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prefAws_title">Aws Iot</string>
+
+    <string name="prefAws_endpointTitle">AWS IoT Endpoint</string>
+    <string name="prefAws_endpointDescription">&lt;endpoint&gt;.iot.&lt;zone&gt;.amazonaws.com</string>
+    <string name="prefAws_endpointSummary">%s</string>
+
+    <string name="prefAws_invalidEndpoint">Invalid Endpoint url</string>
+
+    <string name="prefAws_clientIdTitle">Client Id</string>
+    <string name="prefAws_clientIdDescription">Things name</string>
+    <string name="prefAws_clientIdSummary">%s</string>
+
+    <string name="prefAws_certificateTitle">Certificate</string>
+    <string name="prefAws_privateKeyTitle">Private key</string>
+
+    <string name="prefAws_requestReadPermission">The read permission is needed to select the certificate/key files</string>
+    <string name="prefAws_deniedReadPermission">Impossible read the needed certificate/key files</string>
+
+</resources>

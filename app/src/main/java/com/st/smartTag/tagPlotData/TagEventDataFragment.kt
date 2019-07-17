@@ -37,28 +37,28 @@
 
 package com.st.smartTag.tagPlotData
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.os.Bundle
-import android.support.annotation.DrawableRes
-import android.support.v4.app.Fragment
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.DrawableRes
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.st.smartTag.R
-import com.st.smartTag.model.AccelerationEvent
-import com.st.smartTag.model.EventDataSample
-import com.st.smartTag.model.Orientation
+import com.st.smartaglib.model.AccelerationEvent
+import com.st.smartaglib.model.EventDataSample
+import com.st.smartaglib.model.Orientation
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class TagEventDataFragment : Fragment() {
+class TagEventDataFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var smartTag: TagDataViewModel
-    private lateinit var eventListView:RecyclerView
+    private lateinit var eventListView: androidx.recyclerview.widget.RecyclerView
 
     private val eventList: MutableList<EventDataSample> = mutableListOf()
 
@@ -78,24 +78,24 @@ class TagEventDataFragment : Fragment() {
     private fun initializeSmartTagObserver() {
 
         smartTag.eventSampleList.observe(this, Observer<MutableList<EventDataSample>> {
-            it?.let {
+            it?.let { sampleList ->
                 eventList.clear()
-                eventList.addAll(it)
-                eventListView.adapter.notifyDataSetChanged()
+                eventList.addAll(sampleList)
+                eventListView.adapter?.notifyDataSetChanged()
             }
         })
         smartTag.lastEventSample.observe(this, Observer {
-            it?.let {
-                eventList.add(it)
-                eventListView.adapter.notifyDataSetChanged()
+            it?.let { lastEvent ->
+                eventList.add(lastEvent)
+                eventListView.adapter?.notifyDataSetChanged()
             }
         })
 
     }
 
-    class EventAdapter(private val sampleList:List<EventDataSample>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    class EventAdapter(private val sampleList:List<EventDataSample>) : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
             val inflater = LayoutInflater.from(parent.context)
             return if(viewType == VIEW_HOLDER_EVENT_VIEW ){
                 val view = inflater
@@ -116,7 +116,7 @@ class TagEventDataFragment : Fragment() {
             return if(sampleList.isEmpty()) VIEW_HOLDER_EMPTY_VIEW else VIEW_HOLDER_EVENT_VIEW
         }
 
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
             when(holder) {
                 is EventViewHolder -> {
                     val data = sampleList[position]
@@ -130,23 +130,14 @@ class TagEventDataFragment : Fragment() {
             private const val VIEW_HOLDER_EMPTY_VIEW = 1
             private const val VIEW_HOLDER_EVENT_VIEW = 2
 
-            class EmptyViewHolder(view:View):RecyclerView.ViewHolder(view)
+            class EmptyViewHolder(view:View): androidx.recyclerview.widget.RecyclerView.ViewHolder(view)
 
-            class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-                private val date:TextView
-                private val orientationImg:ImageView
-                private val eventTypeImg:ImageView
-                private val eventTypeText:TextView
-                private val eventVibrationText:TextView
-
-                init {
-                    date = itemView.findViewById(R.id.itemEvent_dateText)
-                    orientationImg = itemView.findViewById(R.id.itemEvent_orientationImg)
-                    eventTypeImg = itemView.findViewById(R.id.itemEvent_eventImg)
-                    eventTypeText = itemView.findViewById(R.id.itemEvent_eventText)
-                    eventVibrationText = itemView.findViewById(R.id.itemEvent_vibrationText)
-
-                }
+            class EventViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+                private val date:TextView = itemView.findViewById(R.id.itemEvent_dateText)
+                private val orientationImg:ImageView = itemView.findViewById(R.id.itemEvent_orientationImg)
+                private val eventTypeImg:ImageView = itemView.findViewById(R.id.itemEvent_eventImg)
+                private val eventTypeText:TextView = itemView.findViewById(R.id.itemEvent_eventText)
+                private val eventVibrationText:TextView = itemView.findViewById(R.id.itemEvent_vibrationText)
 
                 private fun setOrientationImage(currentOrientation: Orientation) {
                     if (currentOrientation == Orientation.UNKNOWN) {
@@ -195,7 +186,7 @@ class TagEventDataFragment : Fragment() {
                         (events.contains(AccelerationEvent.ORIENTATION) && events.size==1)
 
                 private fun setEventImage(events: Array<AccelerationEvent>) {
-                    var event:AccelerationEvent? =AccelerationEvent.ORIENTATION;
+                    var event:AccelerationEvent? =AccelerationEvent.ORIENTATION
                     if (!containsOnlyOrientationEvent(events)){
                         event = events.firstOrNull{ it!=AccelerationEvent.ORIENTATION }
                     }

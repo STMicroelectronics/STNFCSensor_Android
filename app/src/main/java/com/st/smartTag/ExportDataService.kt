@@ -43,10 +43,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Environment
-import android.support.v4.content.FileProvider
-import android.support.v4.content.LocalBroadcastManager
+import androidx.core.content.FileProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.util.Log
-import com.st.smartTag.model.*
+import com.st.smartTag.util.getTypeSerializableExtra
+import com.st.smartaglib.model.*
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -62,10 +63,10 @@ class ExportDataService : IntentService("ExportDataService") {
         if (intent != null) {
             val action = intent.action
             if (ACTION_STORE_CSV_LOG == action) {
-                val conf = intent.getParcelableExtra<SamplingConfiguration>(EXTRA_CONF)
-                val extreme = intent.getParcelableExtra<TagExtreme>(EXTRA_EXTREME)
-                val sensorSamples = intent.getParcelableArrayListExtra<SensorDataSample>(EXTRA_SAMPLES)
-                val eventSamples = intent.getParcelableArrayListExtra<EventDataSample>(EXTRA_EVENTS)
+                val conf = intent.getTypeSerializableExtra<SamplingConfiguration>(EXTRA_CONF)
+                val extreme = intent.getTypeSerializableExtra<TagExtreme>(EXTRA_EXTREME)
+                val sensorSamples = intent.getTypeSerializableExtra<ArrayList<SensorDataSample>>(EXTRA_SAMPLES)
+                val eventSamples = intent.getTypeSerializableExtra<ArrayList<EventDataSample>>(EXTRA_EVENTS)
                 handleStoreCSVLog(conf, extreme, sensorSamples,eventSamples)
             }
         }
@@ -131,7 +132,7 @@ class ExportDataService : IntentService("ExportDataService") {
     }
 
     /**
-     * print into [out] the min and max value from the [sample] data.
+     * print into [out] the min and max key from the [sample] data.
      * [name] say what the [sample] represent, and [unit] is the unit of the [sample] data
      */
     private fun printExtreme(out: Formatter, name: String, unit: String, sample: DataExtreme) {
@@ -213,7 +214,7 @@ class ExportDataService : IntentService("ExportDataService") {
             out.format(NUMBER_LOCALE,"%s,%s,%s,%f\n", CVS_DATA_FORMAT.format(it.date),
                     it.events.fold(""){ str,event -> str + " "+ event.name },
                     it.currentOrientation.name,
-                    it.acceleration.valueOrNan());
+                    it.acceleration.valueOrNan())
         }
         out.format("\n\n")
     }
@@ -244,7 +245,7 @@ class ExportDataService : IntentService("ExportDataService") {
     private fun notifyExportError(error: String) {
         val intent = Intent(ACTION_EXPORT_ERROR)
         intent.putExtra(EXTRA_EXPORT_ERROR, error)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     /**
@@ -255,7 +256,7 @@ class ExportDataService : IntentService("ExportDataService") {
     private fun notifyExportSuccess(file: Uri) {
         val intent = Intent(ACTION_EXPORT_SUCCESS)
         intent.putExtra(EXTRA_EXPORTED_FILE, file)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     companion object {
@@ -265,22 +266,22 @@ class ExportDataService : IntentService("ExportDataService") {
         // date format to use inside the csv file
         private val CVS_DATA_FORMAT = SimpleDateFormat("dd/MM/yy HH:mm:ss", Locale.getDefault())
         //path and file extension to use to store the cvs file
-        private val FILE_NAME_FORMAT = "/STMicroelectronics/STNFCSensor/%s.csv"
+        private const val FILE_NAME_FORMAT = "/STMicroelectronics/STNFCSensor/%s.csv"
 
         //use us locale to be secure to have . as decimal separator
         private val NUMBER_LOCALE = Locale.US
 
-        private val ACTION_STORE_CSV_LOG = ExportDataService::class.java.canonicalName + ".ACTION_STORE_CSV_LOG"
-        private val EXTRA_CONF = ExportDataService::class.java.canonicalName + ".EXTRA_CONF"
-        private val EXTRA_EXTREME = ExportDataService::class.java.canonicalName + ".EXTRA_EXTREME"
-        private val EXTRA_SAMPLES = ExportDataService::class.java.canonicalName + ".EXTRA_SAMPLES"
-        private val EXTRA_EVENTS = ExportDataService::class.java.canonicalName + ".EXTRA_EVENTS"
+        private val ACTION_STORE_CSV_LOG = ExportDataService::class.java.name + ".ACTION_STORE_CSV_LOG"
+        private val EXTRA_CONF = ExportDataService::class.java.name + ".EXTRA_CONF"
+        private val EXTRA_EXTREME = ExportDataService::class.java.name + ".EXTRA_EXTREME"
+        private val EXTRA_SAMPLES = ExportDataService::class.java.name + ".EXTRA_SAMPLES"
+        private val EXTRA_EVENTS = ExportDataService::class.java.name + ".EXTRA_EVENTS"
 
-        val ACTION_EXPORT_ERROR = ExportDataService::class.java.canonicalName + ".ACTION_EXPORT_ERROR"
-        val EXTRA_EXPORT_ERROR = ExportDataService::class.java.canonicalName + ".EXTRA_EXPORT_ERROR"
+        val ACTION_EXPORT_ERROR = ExportDataService::class.java.name + ".ACTION_EXPORT_ERROR"
+        val EXTRA_EXPORT_ERROR = ExportDataService::class.java.name + ".EXTRA_EXPORT_ERROR"
 
-        val ACTION_EXPORT_SUCCESS = ExportDataService::class.java.canonicalName + ".ACTION_EXPORT_COMPLETE"
-        val EXTRA_EXPORTED_FILE = ExportDataService::class.java.canonicalName + ".EXTRA_EXPORTED_FILE"
+        val ACTION_EXPORT_SUCCESS = ExportDataService::class.java.name + ".ACTION_EXPORT_COMPLETE"
+        val EXTRA_EXPORTED_FILE = ExportDataService::class.java.name + ".EXTRA_EXPORTED_FILE"
 
         /**
          * return an intent filter to caputre all the broadcast message send by this service
@@ -296,8 +297,8 @@ class ExportDataService : IntentService("ExportDataService") {
             if(dataSample==null)
                 return
 
-            val sensorSample = dataSample.filterIsInstance<SensorDataSample>()
-            val eventSamples = dataSample.filterIsInstance<EventDataSample>()
+            val sensorSample = dataSample.getSensorDataSample()
+            val eventSamples = dataSample.getEventDataSample()
 
             if (sensorSample.isNotEmpty())
                 intent.putExtra(EXTRA_SAMPLES, ArrayList(sensorSample))
@@ -310,8 +311,7 @@ class ExportDataService : IntentService("ExportDataService") {
          * start the service to store the data into a csv file
          * [conf] tag configuration
          * [extreme] sensor extreme data
-         * [sensorSample] list of sample to write
-         * [eventSamples] list of async events to write
+         * [dataSample] list of sample to write
          */
         fun startExportCSVData(context: Context, conf: SamplingConfiguration?, extreme: TagExtreme?, dataSample: List<DataSample>?) {
             val intent = Intent(context, ExportDataService::class.java)
@@ -330,7 +330,7 @@ class ExportDataService : IntentService("ExportDataService") {
         private fun Boolean.yesOrNo(): String = if (this) "Yes"  else  "No"
 
         /**
-         * if the value is null return [Float.NaN] otherwise return the variable value
+         * if the key is null return [Float.NaN] otherwise return the variable key
          */
         private fun Float?.valueOrNan(): Float = this ?: Float.NaN
         private fun Int?.valueOrNan(): Float = if(this!=null) this.toFloat() else Float.NaN

@@ -37,6 +37,7 @@
   -->
 
 <resources>
+    <string name="about_title">About</string>
     <string name="about_versionFormat">Version: %1s</string>
     <string name="about_content">
         ST SmarTag application to be used with STMicroelectronics <a href="http://www.st.com/en/product/fp-sns-smartag1">FP-SNS-SMARTAG1</a> compatible firmware.\n\n

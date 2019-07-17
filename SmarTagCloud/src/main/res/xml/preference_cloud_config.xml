@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    android:title="Cloud Service"
+    xmlns:android="http://schemas.android.com/apk/res/android"    >
+
+    <CheckBoxPreference
+        android:title="Enable Cloud Logging"
+        android:key="cloudConfig.enabled"
+        android:defaultValue="false"/>
+
+    <ListPreference
+        android:title="Cloud Service"
+        android:key="cloudConfig.service"/>
+
+    <PreferenceScreen
+        android:title="Service Configuration"
+        android:key="cloudConfig.serviceConf"/>
+
+</PreferenceScreen>

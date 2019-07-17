@@ -14,6 +14,11 @@
     <string name="main_export_data_success">Export success</string>
     <string name="main_open">Open</string>
     <string name="main_open_data_file_chooser">Open exported sensor data</string>
+    <string name="main_nfc_disabled">Enable the nfc to use the app</string>
+    <string name="main_nfc_enable_button">Enable</string>
+
+    <string name="main_cloud_complete">Cloud Sync Completed</string>
+    <string name="main_cloud_error_format">Cloud Sync error: %s</string>
 
     <string name="data_pressure_name">Pressure</string>
     <string name="data_temperature_name">Temperature</string>

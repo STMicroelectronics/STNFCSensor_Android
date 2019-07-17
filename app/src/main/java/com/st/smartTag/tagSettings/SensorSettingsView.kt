@@ -38,7 +38,7 @@
 package com.st.smartTag.tagSettings
 
 import android.content.Context
-import android.support.design.widget.TextInputLayout
+import com.google.android.material.textfield.TextInputLayout
 import android.util.AttributeSet
 import android.view.View
 import android.widget.CompoundButton
@@ -52,8 +52,8 @@ import com.st.smartTag.util.floatValue
 class SensorSettingsView : FrameLayout {
 
     private val enableCheckBox by lazy { findViewById<CompoundButton>(R.id.confSensor_enableCheckBox) }
-    private lateinit var minTextLayout:TextInputLayout
-    private lateinit var maxTextLayout:TextInputLayout
+    private lateinit var minTextLayout: TextInputLayout
+    private lateinit var maxTextLayout: TextInputLayout
 
     var isSensorEnabled: Boolean
         get() = enableCheckBox.isChecked
@@ -92,7 +92,7 @@ class SensorSettingsView : FrameLayout {
     }
 
 
-    private fun updateThresholdVisibility(text:TextInputLayout, thVisible: Boolean, hideTh:Boolean){
+    private fun updateThresholdVisibility(text: TextInputLayout, thVisible: Boolean, hideTh:Boolean){
         if(thVisible){
             if(hideTh)
                 text.visibility = View.INVISIBLE
@@ -162,16 +162,12 @@ class SensorSettingsView : FrameLayout {
     inner class RangeInputChecker (val text: TextInputLayout) : InputChecker (text){
 
         private fun checkBiggerThanMin():Boolean{
-            val min = validRange?.start
-            if (min == null) // no range = valid input
-                return true
+            val min = validRange?.start ?: return true // no range = valid input
             return text.floatValue ?: Float.MIN_VALUE >= min
         }
 
         private fun checkSmallerThanMax():Boolean{
-            val max = validRange?.endInclusive
-            if (max == null) // no range = valid input
-                return true
+            val max = validRange?.endInclusive ?: return true// no range = valid input
             return text.floatValue ?: Float.MIN_VALUE <= max
         }
 

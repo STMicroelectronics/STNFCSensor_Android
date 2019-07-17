@@ -37,13 +37,12 @@
 
 package com.st.smartTag
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
 import android.nfc.Tag
-import android.support.v4.app.FragmentActivity
-import android.util.Log
+import androidx.fragment.app.FragmentActivity
 
 /**
  * View model containing the last nfc tag detected and the last error happening during the use of
@@ -68,7 +67,7 @@ class NfcTagViewModel : ViewModel() {
         get() = _ioError
 
     /**
-     * call when a new [tag] is available, it resets the error value
+     * call when a new [tag] is available, it resets the error key
      */
     fun nfcTagDiscovered(tag: Tag) {
         //Log.d("nfcTag", "Tag: " + tag + "Id: " + tag.id.contentToString())
@@ -98,7 +97,7 @@ class NfcTagViewModel : ViewModel() {
         /**
          * helper function to create a viewmodel attach to the [activity]
          */
-        fun create(activity: FragmentActivity): NfcTagViewModel {
+        fun create(activity: androidx.fragment.app.FragmentActivity): NfcTagViewModel {
             return ViewModelProviders.of(activity).get(NfcTagViewModel::class.java)
         }
     }

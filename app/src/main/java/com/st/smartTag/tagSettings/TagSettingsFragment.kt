@@ -37,15 +37,15 @@
 
 package com.st.smartTag.tagSettings
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.nfc.Tag
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.content.LocalBroadcastManager
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,20 +54,21 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.st.smartTag.NfcTagViewModel
 import com.st.smartTag.R
-import com.st.smartTag.SmartTagService
-import com.st.smartTag.model.SamplingConfiguration
-import com.st.smartTag.model.SensorConfiguration
-import com.st.smartTag.model.Threshold
+import com.st.smartTag.SmarTagService
+import com.st.smartaglib.model.SamplingConfiguration
+import com.st.smartaglib.model.SensorConfiguration
+import com.st.smartaglib.model.Threshold
 import android.app.Activity
 import android.content.DialogInterface
-import android.support.design.widget.TextInputLayout
-import android.support.v7.app.AlertDialog
+import com.google.android.material.textfield.TextInputLayout
+import androidx.appcompat.app.AlertDialog
 import android.view.inputmethod.InputMethodManager
-import com.st.smartTag.nfc.SmarTag
 import com.st.smartTag.util.InputChecker
+import com.st.smartTag.util.getTypeSerializableExtra
+import com.st.smartaglib.SmarTag
 
 
-class TagSettingsFragment : Fragment() {
+class TagSettingsFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var smartTag: TagSettingsViewModel
     private lateinit var nfcTagHolder: NfcTagViewModel
@@ -98,9 +99,9 @@ class TagSettingsFragment : Fragment() {
     private fun redoLastOperation(tag: Tag) {
         val desideredSettings = smartTag.desiredSettings.value
         if (desideredSettings != null) { //we have to writeConfiguraiton something
-            SmartTagService.storeConfiguration(context!!, tag, desideredSettings)
+            SmarTagService.storeConfiguration(context!!, tag, desideredSettings)
         } else {
-            SmartTagService.startReadConfiguration(context!!, tag)
+            SmarTagService.startReadConfiguration(context!!, tag)
         }
     }
 
@@ -176,7 +177,7 @@ class TagSettingsFragment : Fragment() {
                 val value = input.toIntOrNull()
                 if(value!=null)
                     return isValidSamplingInterval(value)
-                return false;
+                return false
             }
 
             override fun getErrorString(): String {
@@ -271,11 +272,7 @@ class TagSettingsFragment : Fragment() {
 
     private fun getSamplingInterval():Int{
         val interval = samplingIntervalText.text.toString().toIntOrNull()
-        if(interval==null)
-            return SmarTag.VALID_SAMPLING_RATE_INTERVAL.first
-        else
-            //clamp to VALID_SAMPLING_RATE_INTERVAL
-            return interval.coerceIn(SmarTag.VALID_SAMPLING_RATE_INTERVAL)
+        return interval?.coerceIn(SmarTag.VALID_SAMPLING_RATE_INTERVAL) ?: SmarTag.VALID_SAMPLING_RATE_INTERVAL.first
     }
 
     private fun getCurrentSettings(): SamplingConfiguration {
@@ -323,18 +320,18 @@ class TagSettingsFragment : Fragment() {
         override fun onReceive(context: Context?, intent: Intent?) {
 
             when (intent?.action) {
-                SmartTagService.READ_TAG_CONFIGURATION_ACTION -> {
-                    val conf: SamplingConfiguration = intent.getParcelableExtra(SmartTagService.EXTRA_TAG_CONFIGURATION)
+                SmarTagService.READ_TAG_CONFIGURATION_ACTION -> {
+                    val conf: SamplingConfiguration = intent.getTypeSerializableExtra(SmarTagService.EXTRA_TAG_CONFIGURATION)
                     smartTag.newConfiguration(conf)
                 }
-            //SmartTagService.WRITE_TAG_START_ACTION -> showProgress(getString(R.string.settings_startWriting))
-                SmartTagService.WRITE_TAG_COMPLETE_ACTION -> {
+            //SmarTagService.WRITE_TAG_START_ACTION -> showProgress(getString(R.string.settings_startWriting))
+                SmarTagService.WRITE_TAG_COMPLETE_ACTION -> {
                     showSnackMessage(getString(R.string.settings_writeConfCompleted))
                     smartTag.onSettingsWrote()
                 }
-                SmartTagService.READ_TAG_ERROR_ACTION,
-                SmartTagService.WRITE_TAG_ERROR_ACTION -> {
-                    val msg = intent.getStringExtra(SmartTagService.EXTRA_ERROR_STR)
+                SmarTagService.READ_TAG_ERROR_ACTION,
+                SmarTagService.WRITE_TAG_ERROR_ACTION -> {
+                    val msg = intent.getStringExtra(SmarTagService.EXTRA_ERROR_STR)
                     nfcTagHolder.nfcTagError(msg)
                 }
             }
@@ -342,20 +339,20 @@ class TagSettingsFragment : Fragment() {
     }
 
     private fun writeConfiguraiton(conf: SamplingConfiguration) {
-        val tag = nfcTagHolder.nfcTag.value;
+        val tag = nfcTagHolder.nfcTag.value
         if (tag != null)
-            SmartTagService.storeConfiguration(context!!, tag, conf)
+            SmarTagService.storeConfiguration(context!!, tag, conf)
     }
 
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(context!!)
-                .registerReceiver(nfcServiceResponse, SmartTagService.getReadWriteConfigurationFilter())
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(context!!)
+                .registerReceiver(nfcServiceResponse, SmarTagService.getReadWriteConfigurationFilter())
     }
 
     override fun onPause() {
         super.onPause()
-        LocalBroadcastManager.getInstance(context!!)
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(context!!)
                 .unregisterReceiver(nfcServiceResponse)
     }
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- Custom Preference Theme inherits from the v14 support library Material Theme -->
+    <style name="LibPreferenceTheme" parent="Theme.AppCompat.Light">
+        <item name="preferenceTheme">
+            @style/PreferenceThemeOverlay.v14.Material
+        </item>
+    </style>
+
+</resources>

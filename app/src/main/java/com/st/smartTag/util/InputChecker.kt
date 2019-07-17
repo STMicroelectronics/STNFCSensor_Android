@@ -36,12 +36,12 @@
  */
 package com.st.smartTag.util
 
-import android.support.design.widget.TextInputLayout
+import com.google.android.material.textfield.TextInputLayout
 import android.text.Editable
 import android.text.TextWatcher
 
 /**
- * Class used to check that a TextInputLayout contains a valid value,
+ * Class used to check that a TextInputLayout contains a valid key,
  * if not an error is shown
  */
 abstract class InputChecker(private val mTextInputLayout: TextInputLayout) : TextWatcher {

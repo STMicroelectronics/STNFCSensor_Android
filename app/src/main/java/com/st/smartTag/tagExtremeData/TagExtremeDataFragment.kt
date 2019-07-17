@@ -37,38 +37,39 @@
 
 package com.st.smartTag.tagExtremeData
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.LocalBroadcastManager
+import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.st.smartTag.NfcTagViewModel
 import com.st.smartTag.R
-import com.st.smartTag.SmartTagService
+import com.st.smartTag.SmarTagService
+import com.st.smartTag.util.getTypeSerializableExtra
 
-import com.st.smartTag.model.DataExtreme
-import com.st.smartTag.model.TagExtreme
+import com.st.smartaglib.model.DataExtreme
+import com.st.smartaglib.model.TagExtreme
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class TagExtremeDataFragment : Fragment() {
+class TagExtremeDataFragment : androidx.fragment.app.Fragment() {
 
     private val nfcServiceResponse = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
 
             when (intent?.action) {
-                SmartTagService.READ_TAG_EXTREME_DATA_ACTION -> {
-                    val data: TagExtreme = intent.getParcelableExtra(SmartTagService.EXTRA_TAG_EXTREME_DATA)
+                SmarTagService.READ_TAG_EXTREME_DATA_ACTION -> {
+                    val data = intent.getTypeSerializableExtra<TagExtreme>(SmarTagService.EXTRA_TAG_EXTREME_DATA)
                     smartTag.newExtremeData(data)
                 }
-                SmartTagService.READ_TAG_ERROR_ACTION -> {
-                    val msg = intent.getStringExtra(SmartTagService.EXTRA_ERROR_STR)
+                SmarTagService.READ_TAG_ERROR_ACTION -> {
+                    val msg = intent.getStringExtra(SmarTagService.EXTRA_ERROR_STR)
                     nfcTagHolder.nfcTagError(msg)
                 }
             }
@@ -110,7 +111,7 @@ class TagExtremeDataFragment : Fragment() {
     private fun initializeNfcTagObserver() {
         nfcTagHolder.nfcTag.observe(this, Observer {
             if (it != null)
-                SmartTagService.startReadingDataExtreme(context!!, it)
+                SmarTagService.startReadingDataExtreme(context!!, it)
         })
     }
 
@@ -126,14 +127,14 @@ class TagExtremeDataFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(context!!)
-                .registerReceiver(nfcServiceResponse, SmartTagService.getReadDataExtremeFilter())
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(context!!)
+                .registerReceiver(nfcServiceResponse, SmarTagService.getReadDataExtremeFilter())
     }
 
 
     override fun onPause() {
         super.onPause()
-        LocalBroadcastManager.getInstance(context!!)
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(context!!)
                 .unregisterReceiver(nfcServiceResponse)
     }
 

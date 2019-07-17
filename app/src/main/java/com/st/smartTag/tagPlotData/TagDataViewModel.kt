@@ -37,14 +37,15 @@
 
 package com.st.smartTag.tagPlotData
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProviders
-import android.support.v4.app.FragmentActivity
-import com.st.smartTag.model.DataSample
-import com.st.smartTag.model.EventDataSample
-import com.st.smartTag.model.SensorDataSample
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.FragmentActivity
+import android.util.Log
+import com.st.smartaglib.model.DataSample
+import com.st.smartaglib.model.EventDataSample
+import com.st.smartaglib.model.SensorDataSample
 
 class TagDataViewModel : ViewModel() {
 
@@ -55,6 +56,11 @@ class TagDataViewModel : ViewModel() {
     val numberSample: LiveData<Int>
         get() = _numberSample
 
+
+    private val _isUpdating = MutableLiveData<Boolean>()
+
+    val isUpdating : LiveData<Boolean>
+        get() = _isUpdating
 
     private val _allSampleList = MutableLiveData<MutableList<DataSample>>()
 
@@ -102,21 +108,28 @@ class TagDataViewModel : ViewModel() {
         _sensorSampleList.value?.add(sensorSample)
     }
 
+    private fun appendEventDataSample(eventSample:EventDataSample){
+        _eventSampleList.value?.add(eventSample)
+        _lastEventSample.value = eventSample
+        //if it has the acceleration data, create also a sensor sample
+        if(eventSample.acceleration!=null) {
+            val accelerationSample = SensorDataSample(eventSample.date,
+                    null, null, null, eventSample.acceleration?.toFloat())
+            appendSensorSample(accelerationSample)
+        }
+    }
+
     fun appendSample(sensorSample: DataSample) {
         _allSampleList.value?.add(sensorSample)
+        _isUpdating.value = _allSampleList.value?.size != _numberSample.value
+        Log.d("VM",""+_allSampleList.value?.size +"->"+_numberSample.value)
+
         when(sensorSample){
             is SensorDataSample -> {
                 appendSensorSample(sensorSample)
             }
             is EventDataSample -> {
-                _eventSampleList.value?.add(sensorSample)
-                _lastEventSample.value = sensorSample
-                //if it has the acceleration data, create also a sensor sample
-                if(sensorSample.acceleration!=null) {
-                    val accelerationSample = SensorDataSample(sensorSample.date,
-                            null, null, null, sensorSample.acceleration.toFloat())
-                    appendSensorSample(accelerationSample)
-                }
+                appendEventDataSample(sensorSample)
             }
         }
     }
@@ -136,10 +149,11 @@ class TagDataViewModel : ViewModel() {
         _allSampleList.value = mutableListOf()
         _lastSensorSample.value = null
         _lastEventSample.value = null
+        _isUpdating.value=false
     }
 
     companion object {
-        fun create(activity: FragmentActivity): TagDataViewModel {
+        fun create(activity: androidx.fragment.app.FragmentActivity): TagDataViewModel {
             return ViewModelProviders.of(activity).get(TagDataViewModel::class.java)
         }
     }

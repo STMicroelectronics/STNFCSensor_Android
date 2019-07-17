@@ -82,7 +82,7 @@
 
     </LinearLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:visibility="gone"
         android:id="@+id/singleShot_data"
         android:layout_width="match_parent"
@@ -162,5 +162,5 @@
             app:layout_constraintTop_toBottomOf="@+id/singleShot_humidity">
 
         </com.st.smartTag.util.DataView>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

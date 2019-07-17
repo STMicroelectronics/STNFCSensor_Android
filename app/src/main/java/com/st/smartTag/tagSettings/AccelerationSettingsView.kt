@@ -38,7 +38,7 @@
 package com.st.smartTag.tagSettings
 
 import android.content.Context
-import android.support.design.widget.TextInputLayout
+import com.google.android.material.textfield.TextInputLayout
 import android.util.AttributeSet
 import android.view.View
 import android.widget.CompoundButton
@@ -124,9 +124,7 @@ class AccelerationSettingsView : FrameLayout {
                 context.getString(R.string.data_acceleration_unit))
         accelerationThresholdInputLayout.editText?.addTextChangedListener(object : InputChecker(accelerationThresholdInputLayout) {
             override fun validate(input: String): Boolean {
-                val max = maxAccThreshold
-                if (max == null) // no range = valid input
-                    return true
+                val max = maxAccThreshold ?: return true // no range = valid input
                 return accelerationThresholdInputLayout.floatValue ?: Float.MIN_VALUE <= max
             }
 

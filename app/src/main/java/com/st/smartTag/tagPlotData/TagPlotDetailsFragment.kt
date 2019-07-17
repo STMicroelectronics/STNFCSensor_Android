@@ -39,12 +39,12 @@ package com.st.smartTag.tagPlotData
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.widget.TextView
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
@@ -54,14 +54,14 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class TagPlotDetailsFragment : DialogFragment(){
+class TagPlotDetailsFragment : androidx.fragment.app.DialogFragment(){
 
-    private fun loadView() : RecyclerView {
+    private fun loadView() : androidx.recyclerview.widget.RecyclerView {
         return LayoutInflater.from(activity)
-                .inflate(R.layout.dialog_plot_details, null, false) as RecyclerView
+                .inflate(R.layout.dialog_plot_details, null, false) as androidx.recyclerview.widget.RecyclerView
     }
 
-    private lateinit var detailListView: RecyclerView
+    private lateinit var detailListView: androidx.recyclerview.widget.RecyclerView
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
@@ -84,8 +84,7 @@ class TagPlotDetailsFragment : DialogFragment(){
         data class Sample(val date: Date,val value:Float):Parcelable{
             constructor(parcel: Parcel) : this(
                     Date(parcel.readLong()),
-                    parcel.readFloat()) {
-            }
+                    parcel.readFloat())
 
             override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeLong(date.time)
@@ -107,11 +106,11 @@ class TagPlotDetailsFragment : DialogFragment(){
             }
         }
 
-        private val ARGS_PLOT_DATA = TagPlotDetailsFragment::class.java.canonicalName+".PLOT_DATA"
-        private val ARGS_DATA_UNIT = TagPlotDetailsFragment::class.java.canonicalName+".DATA_UNIT"
-        private val ARGS_DATA_FORMAT = TagPlotDetailsFragment::class.java.canonicalName+".DATA_FORMAT"
+        private val ARGS_PLOT_DATA = TagPlotDetailsFragment::class.java.name+".PLOT_DATA"
+        private val ARGS_DATA_UNIT = TagPlotDetailsFragment::class.java.name+".DATA_UNIT"
+        private val ARGS_DATA_FORMAT = TagPlotDetailsFragment::class.java.name+".DATA_FORMAT"
 
-        fun newInstance(dataSet:ArrayList<Sample>,dataFormat:String,dataUnit:String): DialogFragment {
+        fun newInstance(dataSet:ArrayList<Sample>,dataFormat:String,dataUnit:String): androidx.fragment.app.DialogFragment {
             val fragment = TagPlotDetailsFragment()
             val args = Bundle()
             args.putParcelableArrayList(ARGS_PLOT_DATA,dataSet)
@@ -123,7 +122,7 @@ class TagPlotDetailsFragment : DialogFragment(){
 
         class PlotDetailsAdapter(private val dataSet: ArrayList<Sample>,
                                  private val dataFormat:String,
-                                 private val dataUnit: String) : RecyclerView.Adapter<PlotDetailsAdapter.Companion.ViewHolder>() {
+                                 private val dataUnit: String) : androidx.recyclerview.widget.RecyclerView.Adapter<PlotDetailsAdapter.Companion.ViewHolder>() {
 
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
                 val view = LayoutInflater.from(parent.context)
@@ -142,9 +141,9 @@ class TagPlotDetailsFragment : DialogFragment(){
             companion object {
                 val DATE_FORMAT = SimpleDateFormat("HH:mm:ss dd/MMM", Locale.getDefault())
 
-                class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+                class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
-                    private val textView:TextView = itemView.findViewById<TextView>(android.R.id.text1)
+                    private val textView:TextView = itemView.findViewById(android.R.id.text1)
 
                     fun display(data: Sample,dataFormat:String, dataUnit: String) {
                         textView.text = String.format("%s: $dataFormat %s",

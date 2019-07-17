@@ -36,7 +36,7 @@
   ~ OF SUCH DAMAGE.
   -->
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -83,7 +83,7 @@
         app:layout_constraintStart_toStartOf="@+id/confAcc_title"
         app:layout_constraintTop_toBottomOf="@+id/confAcc_title" />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/confAcc_eventsLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
         app:layout_constraintStart_toStartOf="@+id/confAcc_enableCheckBox"
         app:layout_constraintTop_toBottomOf="@+id/confAcc_enableCheckBox">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/confAcc_accelerationThLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -108,12 +108,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="hint"
                 android:inputType="number" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
             android:id="@+id/confAcc_orientationEnableCheckBox"
@@ -145,5 +145,5 @@
             app:layout_constraintStart_toStartOf="@+id/confAcc_accelerationThLayout"
             app:layout_constraintTop_toBottomOf="@+id/confAcc_accelerationThLayout" />
 
-    </android.support.constraint.ConstraintLayout>
-</android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

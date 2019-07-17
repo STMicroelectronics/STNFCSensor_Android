@@ -38,13 +38,13 @@
 package com.st.smartTag.tagSingleShot
 
 import android.animation.ObjectAnimator
-import android.arch.lifecycle.Observer
-import android.support.v4.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.fragment.app.Fragment
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.LocalBroadcastManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,29 +53,30 @@ import android.widget.TextView
 import com.st.smartTag.NfcTagViewModel
 import com.st.smartTag.R
 
-import com.st.smartTag.SmartTagService
-import com.st.smartTag.model.SensorDataSample
+import com.st.smartTag.SmarTagService
+import com.st.smartaglib.model.SensorDataSample
 import com.st.smartTag.util.DataView
+import com.st.smartTag.util.getTypeSerializableExtra
 
-class TagSingleShotFragment : Fragment() {
+class TagSingleShotFragment : androidx.fragment.app.Fragment() {
 
     private val nfcServiceResponse = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
 
             when (intent?.action) {
-                SmartTagService.READ_TAG_SAMPLE_DATA_ACTION -> {
-                    val sensorData: SensorDataSample = intent.getParcelableExtra(SmartTagService.EXTRA_TAG_SAMPLE_DATA)
+                SmarTagService.READ_TAG_SAMPLE_DATA_ACTION -> {
+                    val sensorData: SensorDataSample = intent.getTypeSerializableExtra(SmarTagService.EXTRA_TAG_SAMPLE_DATA)
                     smartTag.newSample(sensorData)
                 }
-                SmartTagService.READ_TAG_WAIT_ANSWER_ACTION ->{
-                    val timeout = intent.getLongExtra(SmartTagService.EXTRA_WAIT_ANSWER_TIMEOUT_MS_DATA,0)
+                SmarTagService.READ_TAG_WAIT_ANSWER_ACTION ->{
+                    val timeout = intent.getLongExtra(SmarTagService.EXTRA_WAIT_ANSWER_TIMEOUT_MS_DATA,0)
                     smartTag.startWaitingAnswer(timeout)
                 }
-                SmartTagService.SINGLE_SHOT_DATA_NOT_READY_ACTION -> {
+                SmarTagService.SINGLE_SHOT_DATA_NOT_READY_ACTION -> {
                     smartTag.readFail()
                 }
-                SmartTagService.READ_TAG_ERROR_ACTION -> {
-                    val msg = intent.getStringExtra(SmartTagService.EXTRA_ERROR_STR)
+                SmarTagService.READ_TAG_ERROR_ACTION -> {
+                    val msg = intent.getStringExtra(SmarTagService.EXTRA_ERROR_STR)
                     nfcTagHolder.nfcTagError(msg)
                 }
             }
@@ -104,7 +105,7 @@ class TagSingleShotFragment : Fragment() {
         timeoutProgress = rootView.findViewById(R.id.singleShot_timeoutProgress)
         waitingView = rootView.findViewById(R.id.singleShot_waiting)
         dataView = rootView.findViewById(R.id.singleShot_data)
-        errorMessageView = rootView.findViewById<TextView>(R.id.singleShot_readFailMessageView)
+        errorMessageView = rootView.findViewById(R.id.singleShot_readFailMessageView)
         return rootView
     }
 
@@ -139,7 +140,7 @@ class TagSingleShotFragment : Fragment() {
     }
 
     private fun updateErrorMessageView(readFail: Boolean?){
-        errorMessageView.visibility = if(readFail ?:false) View.VISIBLE else View.GONE
+        errorMessageView.visibility = if(readFail == true) View.VISIBLE else View.GONE
     }
 
     private fun showWaitingView(timeout: Long?) {
@@ -154,7 +155,7 @@ class TagSingleShotFragment : Fragment() {
     private fun initializeNfcTagObserver() {
         nfcTagHolder.nfcTag.observe(this, Observer {
             if (it != null) {
-                SmartTagService.startSingleShotRead(context!!, it)
+                SmarTagService.startSingleShotRead(context!!, it)
             }else{
                 updateDataSample(null)
             }
@@ -174,14 +175,14 @@ class TagSingleShotFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(context!!)
-                .registerReceiver(nfcServiceResponse, SmartTagService.getReadSingleShotFilter())
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(context!!)
+                .registerReceiver(nfcServiceResponse, SmarTagService.getReadSingleShotFilter())
     }
 
 
     override fun onPause() {
         super.onPause()
-        LocalBroadcastManager.getInstance(context!!)
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(context!!)
                 .unregisterReceiver(nfcServiceResponse)
     }
 

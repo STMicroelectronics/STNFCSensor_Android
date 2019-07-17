@@ -6,8 +6,15 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
     </style>
     <style name="noAnimTheme" parent="AppTheme">
         <item name="android:windowAnimationStyle">@null</item>
     </style>
+
+    <style name="AppPreferenceTheme" parent="AppTheme">
+        <item name="preferenceTheme"> @style/PreferenceThemeOverlay.v14.Material </item>
+    </style>
+
 </resources>
