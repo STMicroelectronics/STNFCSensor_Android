@@ -1,4 +1,5 @@
  Copyright (c) 2018  STMicroelectronics – All rights reserved
+ 
  The STMicroelectronics corporate logo is a trademark of STMicroelectronics
 
  Redistribution and use in source and binary forms, with or without modification,
